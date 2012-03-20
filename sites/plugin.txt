@@ -1,0 +1,9 @@
+freemapkapor.jar;http://downloads.sourceforge.net/project/freemapkapor/0.0.7/freemapkapor.jar?use_mirror=ignum
+	Manifest-Version: 1.0
+	Plugin-Class: sk.freemap.kapor.KaporPlugin
+	Plugin-Description: Import data from SK Cadastral portal
+	Plugin-Icon: images/preferences/kapor2.png
+	Plugin-Link: http://sourceforge.net/projects/freemapkapor/
+	sk_Plugin-Description: Načítavanie vektorových údajov z katastrálneho portalu SR
+	Plugin-Mainversion: 2830
+	Plugin-Version: 52
