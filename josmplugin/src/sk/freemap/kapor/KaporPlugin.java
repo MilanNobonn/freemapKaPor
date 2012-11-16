@@ -11,16 +11,19 @@ import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 
-public class KaporPlugin extends Plugin {
+import sk.freemap.kapor.preferences.KaporPreferenceSetting;
+import sk.freemap.kapor.preferences.PreferenceKeys;
+
+public class KaporPlugin extends Plugin implements PreferenceKeys {
 	public static String mwfUrl;
 
 	public KaporPlugin(PluginInformation info) throws FactoryException,
 			IOException {
 		super(info);
-		mwfUrl = Main.pref.get(ConfigKeys.FREEMAPKAPOR_MWFURL);
+		mwfUrl = Main.pref.get(FREEMAPKAPOR_MWFURL);
 		if (mwfUrl == null || mwfUrl.length() == 0) {
 			mwfUrl = "http://195.28.70.134/kapor2/maps/mapa.mwf";
-			Main.pref.put(ConfigKeys.FREEMAPKAPOR_MWFURL, mwfUrl);
+			Main.pref.put(FREEMAPKAPOR_MWFURL, mwfUrl);
 		}
 
 		Projection.initCRS();
