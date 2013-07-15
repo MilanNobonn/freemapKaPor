@@ -15,16 +15,13 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBWriter;
 
 public class Exporter {
-	public Connection conn;
+	public Connection conn = null;
 
 	WKBWriter wkbwrite = new WKBWriter();
 	PreparedStatement insert_popisky;
 	PreparedStatement insert_geom;
 
 	public Exporter() throws IOException, SQLException {
-		conn = DriverManager.getConnection(
-				"jdbc:postgresql://localhost:5432/kataster2", "nobonn", "");
-		setConnection(conn);
 	}
 
 	public void setConnection(Connection c) throws SQLException {
@@ -44,10 +41,10 @@ public class Exporter {
 				.hasNext();) {
 
 			final MGMapLayer mglayer = layerIter.next();
-			
+
 			if (!mglayer.isVisible())
 				continue;
-			
+
 			final String layertype = mglayer.getType();
 			final String layername = mglayer.getName();
 

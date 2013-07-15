@@ -12,7 +12,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class DatabaseConnectionSetup extends JFrame implements ActionListener {
@@ -20,11 +22,14 @@ public class DatabaseConnectionSetup extends JFrame implements ActionListener {
 	private JTextField jdbcUrl;
 	private JTextField jdbcUser;
 	private JPasswordField jdbcPassword;
+	Exporter exporter;
 
-	DatabaseConnectionSetup() {
+	DatabaseConnectionSetup(Exporter _exporter) {
 		super("Set database connection:");
 
-		setSize(650, 160);
+		exporter = _exporter;
+
+		setSize(850, 200);
 
 		Container c = getContentPane();
 
@@ -34,12 +39,10 @@ public class DatabaseConnectionSetup extends JFrame implements ActionListener {
 		jdbcUser = new JTextField(70);
 		jdbcPassword = new JPasswordField(70);
 
-		// "jdbc:postgresql://localhost:5433/kataster2"
-		// nobonn
-
 		c.add(new JLabel("JDBC connection URL:"));
 		jdbcUrl.setText("jdbc:postgresql://localhost:5432/kataster");
-		jdbcUrl.setToolTipText("jdbc:postgresql:params");
+		jdbcUrl.setToolTipText("jdbc:postgresql:params\n" + "See:\n"
+				+ "http://jdbc.postgresql.org/documentation/head/connect.html");
 		c.add(jdbcUrl);
 		c.add(new JLabel("user:"));
 		c.add(jdbcUser);
@@ -52,6 +55,17 @@ public class DatabaseConnectionSetup extends JFrame implements ActionListener {
 		okButton.addActionListener(this);
 		c.add(okButton);
 
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setBorder(BorderFactory.createLineBorder(Color.black));
+		cancelButton.setActionCommand("Cancel");
+		cancelButton.addActionListener(this);
+		c.add(cancelButton);
+
+		JTextArea description = new JTextArea(
+				"For connection parameters see:\n"
+						+ "http://jdbc.postgresql.org/documentation/head/connect.html");
+		c.add(description);
+
 		this.setVisible(true);
 	}
 
@@ -59,12 +73,17 @@ public class DatabaseConnectionSetup extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if ("OK".equals(e.getActionCommand())) {
 			try {
-				DriverManager.getConnection(jdbcUrl.getText().trim(), jdbcUser
-						.getText().trim(), jdbcPassword.getText().trim());
+				exporter.setConnection(DriverManager.getConnection(jdbcUrl
+						.getText().trim(), jdbcUser.getText().trim(),
+						jdbcPassword.getText().trim()));
+				this.dispose();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, e1.toString(),
+						"Database connection error", JOptionPane.ERROR_MESSAGE);
 			}
+		}
+		if ("Cancel".equals(e.getActionCommand())) {
+			this.dispose();
 		}
 	}
 

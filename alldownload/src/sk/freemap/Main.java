@@ -15,13 +15,10 @@ public class Main {
 		int miny = -1334763 - 20;
 		int maxy = -1132697 + 20;
 
-		JFrame mainFrame = new JFrame();
+		JFrame mainFrame = new JFrame("Kataster Downloader");
 		mainFrame.setSize(800, 600);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
-
-		// System.setProperty("socksProxyHost", "localhost");
-		// System.setProperty("socksProxyPort", "5000");
 
 		String mwfUrl;
 		if (args.length < 1)
@@ -30,11 +27,12 @@ public class Main {
 			mwfUrl = args[0];
 
 		KatApplet katapplet = new KatApplet(mwfUrl);
+		Exporter exporter = new Exporter();
 
-		ViewChangedObserver observer = new ViewChangedObserver(Kraje.load(),
-				katapplet, minx, maxx, miny, maxy);
+		ViewChangedObserver observer = new ViewChangedObserver(exporter,
+				Kraje.load(), katapplet, minx, maxx, miny, maxy);
 
-		ExecutionPanel savePanel = new ExecutionPanel(observer);
+		ExecutionPanel savePanel = new ExecutionPanel(exporter, observer);
 		mainFrame.add("East", savePanel);
 
 		mainFrame.add(katapplet);

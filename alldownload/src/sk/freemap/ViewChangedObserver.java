@@ -33,9 +33,9 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 
 	Date lastcommit;
 
-	public ViewChangedObserver(Collection<PreparedPolygon> _kraje, MGMap _map,
-			int _minx, int _maxx, int _miny, int _maxy) throws IOException,
-			SQLException {
+	public ViewChangedObserver(Exporter _exporter,
+			Collection<PreparedPolygon> _kraje, MGMap _map, int _minx,
+			int _maxx, int _miny, int _maxy) throws IOException, SQLException {
 		kraje = _kraje;
 		map = _map;
 
@@ -44,7 +44,7 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 		miny = _miny;
 		maxy = _maxy;
 
-		exporter = new Exporter();
+		exporter = _exporter;
 	}
 
 	public synchronized void run() {
@@ -109,7 +109,6 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 
 			System.out.println("Done");
 
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
