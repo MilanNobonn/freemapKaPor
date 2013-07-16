@@ -1,7 +1,7 @@
 package sk.freemap;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -9,6 +9,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.simple.SimpleFeature;
@@ -21,14 +22,15 @@ public class Kraje {
 
 	public static LinkedList<PreparedPolygon> load() throws IOException {
 
-		FileDataStore store = FileDataStoreFinder.getDataStore(new File(
-				"src/kraje/hranice_krajov_simpl.shp"));
+		URL krajeShp = Kraje.class
+				.getResource("kraje/hranice_krajov_simpl.shp");
+		FileDataStore store = FileDataStoreFinder.getDataStore(krajeShp);
 		FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = store
 				.getFeatureSource();
 		FeatureCollection<SimpleFeatureType, SimpleFeature> fC = featureSource
 				.getFeatures();
 
-		Iterator<SimpleFeature> iter = fC.iterator();
+		FeatureIterator<SimpleFeature> iter = fC.features();
 
 		LinkedList<PreparedPolygon> list = new LinkedList<PreparedPolygon>();
 
@@ -39,7 +41,7 @@ public class Kraje {
 				list.add(new PreparedPolygon((Polygonal) geomAttr.getValue()));
 			}
 		} finally {
-			fC.close(iter);
+			iter.close();
 		}
 
 		return list;
