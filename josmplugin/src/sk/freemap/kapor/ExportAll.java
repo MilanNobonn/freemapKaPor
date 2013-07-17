@@ -13,6 +13,8 @@ import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.Way;
 
+import sk.freemap.kapor.preferences.PreferenceKeys;
+
 import com.autodesk.mgjava.MGCollection;
 import com.autodesk.mgjava.MGMapApplet;
 import com.autodesk.mgjava.MGMapLayer;
@@ -20,13 +22,13 @@ import com.autodesk.mgjava.MGMapObject;
 import com.autodesk.mgjava.MGPoint;
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class ExportAll {
+public class ExportAll implements PreferenceKeys {
 	public static DataSet exportAll(MGMapApplet map) throws TransformException {
 		DataSet dataset = new DataSet();
 
 		NodeCollection allNodes = new NodeCollection(dataset);
 		
-		final boolean exportNames = Main.pref.getBoolean(ConfigKeys.FREEMAPKAPOR_EXPORT_NAME, false);
+		final boolean exportNames = Main.pref.getBoolean(FREEMAPKAPOR_EXPORT_NAME, false);
 		
 
 		Vector<MGMapLayer> layers = map.getMapLayers();
