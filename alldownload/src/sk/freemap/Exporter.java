@@ -2,10 +2,8 @@ package sk.freemap;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.Vector;
 
 import com.autodesk.mgjava.MGMap;
@@ -37,10 +35,7 @@ public class Exporter {
 	public void export(MGMap map) throws SQLException, IOException {
 		Vector<MGMapLayer> mgLayers = map.getMapLayers();
 
-		for (Iterator<MGMapLayer> layerIter = mgLayers.iterator(); layerIter
-				.hasNext();) {
-
-			final MGMapLayer mglayer = layerIter.next();
+		for (final MGMapLayer mglayer : mgLayers) {
 
 			if (!mglayer.isVisible())
 				continue;
@@ -64,10 +59,8 @@ public class Exporter {
 
 			if (objects != null && objects.size() > 0) {
 
-				for (Iterator<MGMapObject> objIter = objects.iterator(); objIter
-						.hasNext();) {
+				for (final MGMapObject mgobject : objects) {
 
-					MGMapObject mgobject = objIter.next();
 					assert layertype == mgobject.getType();
 					long key = Long.parseLong(mgobject.getKey());
 					String name = mgobject.getName();

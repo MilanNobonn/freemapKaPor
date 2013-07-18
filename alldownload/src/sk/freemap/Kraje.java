@@ -2,7 +2,6 @@ package sk.freemap;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.geotools.data.FeatureSource;

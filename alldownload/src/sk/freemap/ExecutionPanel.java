@@ -15,10 +15,11 @@ public class ExecutionPanel extends JPanel {
 		exporter = _exporter;
 		add("East", new Button("Run"));
 		add("East", new Button("Setup"));
+		add("East", new Button("Screenshot"));
 	}
 
 	public boolean action(Event evt, Object arg) {
-		if (exporter.conn == null && arg.equals("Run"))
+		if (exporter.conn == null)
 			arg = "Setup";
 
 		if (arg.equals("Run")) {
@@ -27,6 +28,9 @@ public class ExecutionPanel extends JPanel {
 		} else if (arg.equals("Setup")) {
 			DatabaseConnectionSetup s = new DatabaseConnectionSetup(exporter);
 			s.setVisible(true);
+			return true;
+		} else if (arg.equals("Screenshot")) {
+			o.onSnapshot();
 			return true;
 		} else
 			return false;

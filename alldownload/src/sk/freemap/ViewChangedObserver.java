@@ -7,13 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 
 import com.autodesk.mgjava.MGMap;
 import com.autodesk.mgjava.MGViewChangedObserver;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.prep.PreparedPolygon;
 
 public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
@@ -45,6 +45,7 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 		maxy = _maxy;
 
 		exporter = _exporter;
+		// At this point exporter.conn may still be not initialized
 	}
 
 	public synchronized void run() {
@@ -66,7 +67,7 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 		lastcommit = new Date();
 
 		Coordinate[] edges = { new Coordinate(), new Coordinate(),
-				new Coordinate(), new Coordinate() };
+				new Coordinate(), new Coordinate(), new Coordinate() };
 
 		try {
 
@@ -85,17 +86,25 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 					edges[3].x = x - w2;
 					edges[3].y = y + h2;
 
-					MultiPoint view = factory.createMultiPoint(edges);
+					edges[4].x = edges[0].x;
+					edges[4].y = edges[0].y;
 
-					for (Iterator<PreparedPolygon> i = kraje.iterator(); i
-							.hasNext();)
-						if (i.next().intersects(view)) {
-							getData(x, y);
+					LinearRing shell = factory.createLinearRing(edges);
+					Polygon view = factory.createPolygon(shell);
+
+					boolean viewIntersects = false;
+
+					for (PreparedPolygon i : kraje)
+						if (i.intersects(view)) {
+							viewIntersects = true;
 							break;
 						}
 
+					if (viewIntersects)
+						getData(x, y);
+
 					if (new Date().getTime() - lastcommit.getTime() > 30)
-						// Regular commit
+						// Regular commit every 30 seconds
 						synchronized (exporter.conn) {
 							exporter.conn.commit();
 							lastcommit = new Date();
@@ -103,6 +112,7 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 				}
 			}
 
+			// Commit all data at the end of downloading process
 			synchronized (exporter.conn) {
 				exporter.conn.commit();
 			}
@@ -179,5 +189,20 @@ public class ViewChangedObserver implements MGViewChangedObserver, Runnable {
 		notifyAll();
 	}
 
-	private static GeometryFactory factory = new GeometryFactory();
+	public synchronized void onSnapshot() {
+		try {
+			exporter.export(map);
+			synchronized (exporter.conn) {
+				exporter.conn.commit();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	private final static GeometryFactory factory = new GeometryFactory();
 }
