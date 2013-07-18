@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/geotools"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mgjava"/>
+	<classpathentry kind="lib" path="/usr/share/java/postgresql-jdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

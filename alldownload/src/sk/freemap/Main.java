@@ -9,7 +9,10 @@ import java.sql.SQLException;
 
 public class Main {
 	public static void main(String[] args) throws IOException,
-			FactoryException, SQLException {
+			FactoryException, SQLException, ClassNotFoundException {
+
+		Class.forName("org.postgresql.Driver");
+
 		int minx = -591312 - 20;
 		int maxx = -165436 + 20;
 		int miny = -1334763 - 20;
